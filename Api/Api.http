@@ -3,3 +3,24 @@
 GET {{Api_HostAddress}}/organisations
 
 ###
+GET {{Api_HostAddress}}/organisations/5
+
+###
+POST {{Api_HostAddress}}/organisations
+Content-Type: application/json
+
+{
+  "name": "apple store",
+  "emailDomain": "appleatore.com"
+}
+
+###
+PATCH {{Api_HostAddress}}/organisations/4
+Content-Type: application/json
+
+{
+  "emailDomain": "applestore.com"
+}
+
+###
+DELETE {{Api_HostAddress}}/organisations/3
