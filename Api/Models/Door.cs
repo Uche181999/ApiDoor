@@ -8,11 +8,13 @@ namespace Api.Models
 {
     public class Door
     {
+
         public int Id { get; set; }
         public string Name { get; set; } = "";
         public int Code { get; set; }
-        public int? OrgId { get; set; }
-        public Organisation? Organisation{ get; set; }
+        // public int orgId { get; set; } COLUMN TO BE REMOVERD
+        public int? OrganisationId { get; set; }
+        public Organisation? Organisation { get; set; }
 
     }
 }
