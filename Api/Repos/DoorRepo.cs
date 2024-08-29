@@ -59,6 +59,12 @@ namespace Api.Repos
             if (existDoor == null){
                 return null ;
             }
+            existDoor.Name = doorDto.Name ?? existDoor.Name ;
+            existDoor.Code = doorDto.Code ?? existDoor.Code ;
+            existDoor.OrganisationId = doorDto.OrganisationId ?? existDoor.OrganisationId;
+            await _context.SaveChangesAsync();
+            return existDoor;
+
 
         }
     }

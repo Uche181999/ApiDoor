@@ -81,13 +81,24 @@ namespace Api.Controllers
         }
         [HttpPatch]
         [Route("/organisations/{orgId}/doors/{id}")]
-        public async Task<IActionResult> Update([FromRoute] int orgId, [FromRoute] int id)
+        public async Task<IActionResult> Update([FromRoute] int orgId, [FromRoute] int id, [FromBody] UpdateDoorDto updateDoor)
         {
             if (!await _orgRepo.OrgExistAsync(orgId))
             {
                 return BadRequest("organisation id does not exist");
 
             }
+            var updateModel = await _doorRepo.UpdateAsync(id, updateDoor);
+            if (updateModel == null)
+            {
+                return NotFound();
+            }
+            var updatedDoor = await _doorRepo.GetDoorByIdAsync(updateModel.Id);
+            if (updatedDoor == null)
+            {
+                return NotFound();
+            }
+            return Ok(updatedDoor.ToDoorDto());
         }
 
     }

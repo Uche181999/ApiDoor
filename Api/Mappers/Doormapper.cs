@@ -22,14 +22,6 @@ namespace Api.Mappers
                 OrganisationId = stockId
             };
         }
-        public static Door ToUpdateDto(this UpdateDoorDto door, int stockId)
-        {
-            return new Door
-            {
-                Name = door.Name,
-                Code = door.Code,
-                OrganisationId = stockId
-            };
-        }
+
     }
 }

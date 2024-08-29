@@ -4716,11 +4716,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\uche\\Desktop\\ApiDoor\\Api\\Api.csproj",
+      "projectUniqueName": "C:\\Users\\uche\\Desktop\\ApiDoor\\Api\\Api.csproj",
       "projectName": "Api",
-      "projectPath": "c:\\Users\\uche\\Desktop\\ApiDoor\\Api\\Api.csproj",
+      "projectPath": "C:\\Users\\uche\\Desktop\\ApiDoor\\Api\\Api.csproj",
       "packagesPath": "C:\\Users\\uche\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\uche\\Desktop\\ApiDoor\\Api\\obj\\",
+      "outputPath": "C:\\Users\\uche\\Desktop\\ApiDoor\\Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\uche\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -4811,13 +4811,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  }
 }

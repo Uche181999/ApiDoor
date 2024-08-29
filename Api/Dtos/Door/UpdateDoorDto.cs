@@ -5,6 +5,6 @@ using System.Threading.Tasks;
 
 namespace Api.Dtos.Door
 {
-    public record class UpdateDoorDto(string Name, int Code, int? organisationId );
+    public record class UpdateDoorDto(string? Name, int? Code, int? OrganisationId );
 
 }
