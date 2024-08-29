@@ -47,7 +47,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateOrgDto createModel)
         {
-            var orgModel = createModel.ToOrgDto();
+            var orgModel = createModel.ToCreateOrgDto();
             await _OrgRepo.CreateAsync(orgModel);
             return CreatedAtAction(nameof(GetById), new { id = orgModel.Id }, orgModel.ToOrgDto());
 
@@ -81,7 +81,5 @@ namespace Api.Controllers
             return NoContent();
 
         }
-
-
     }
 }

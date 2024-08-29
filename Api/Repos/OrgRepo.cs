@@ -26,7 +26,7 @@ namespace Api.Repos
             return orgModel;
         }
 
-        public async  Task<Organisation?> DeleteAsync(int id)
+        public async Task<Organisation?> DeleteAsync(int id)
         {
             var orgModel = await _Context.Organisations.FirstOrDefaultAsync(s => s.Id == id);
             if (orgModel == null)
@@ -70,6 +70,10 @@ namespace Api.Repos
 
             await _Context.SaveChangesAsync();
             return existOrg;
+        }
+        public async Task<bool> OrgExistAsync(int Id)
+        {
+            return await _Context.Organisations.AnyAsync(s => s.Id == Id);
         }
     }
 }

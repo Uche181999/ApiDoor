@@ -9,8 +9,27 @@ namespace Api.Mappers
 {
     public static class Doormapper
     {
-        public static DoorDto ToDoorDto(this Door door){
-            return new DoorDto( door.Id ,door.Name ,door.Code , door.OrganisationId,door.Organisation?.ToOrgDto());
+        public static DoorDto ToDoorDto(this Door door)
+        {
+            return new DoorDto(door.Id, door.Name, door.Code, door.OrganisationId, door.Organisation?.ToOrgDto());
+        }
+        public static Door ToCreateDto(this CreateDoorDto door, int stockId)
+        {
+            return new Door
+            {
+                Name = door.Name,
+                Code = door.Code,
+                OrganisationId = stockId
+            };
+        }
+        public static Door ToUpdateDto(this UpdateDoorDto door, int stockId)
+        {
+            return new Door
+            {
+                Name = door.Name,
+                Code = door.Code,
+                OrganisationId = stockId
+            };
         }
     }
 }

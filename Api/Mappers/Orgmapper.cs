@@ -16,7 +16,7 @@ namespace Api.Mappers
                 OrgModel.EmailDomain
             );
         }
-         public static Organisation ToOrgDto(this CreateOrgDto OrgModel){
+         public static Organisation ToCreateOrgDto(this CreateOrgDto OrgModel){
             return new Organisation(
                 OrgModel.Name,
                 OrgModel.EmailDomain

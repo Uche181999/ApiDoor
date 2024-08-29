@@ -14,5 +14,6 @@ namespace Api.Interfaces
         public Task<Organisation> CreateAsync(Organisation orgModel);
         public Task<Organisation?> UpdateAsync(int id, UpdateOrgDto updateModel);
         public Task<Organisation?> DeleteAsync(int id);
+        public Task<bool> OrgExistAsync(int id );
     }
 }

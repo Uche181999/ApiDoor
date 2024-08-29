@@ -24,3 +24,6 @@ Content-Type: application/json
 
 ###
 DELETE {{Api_HostAddress}}/organisations/3
+
+###
+Get {{Api_HostAddress}}/doors
