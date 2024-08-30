@@ -31,6 +31,19 @@ namespace Api.Repos
 
         }
 
+        public async  Task<Door?> DeleteAsync(int id)
+        {
+            var doorModel = await _context.Doors.FirstOrDefaultAsync(x=> x.Id == id);
+            if (doorModel == null){
+                return null;
+            }
+            _context.Doors.Remove(doorModel);
+            await _context.SaveChangesAsync();
+            return doorModel;
+
+
+        }
+
         public async Task<List<Door>> GetAllAsync()
         {
             return await _context.Doors.Include(x => x.Organisation).ToListAsync();

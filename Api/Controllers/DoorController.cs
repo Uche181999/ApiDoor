@@ -100,6 +100,23 @@ namespace Api.Controllers
             }
             return Ok(updatedDoor.ToDoorDto());
         }
+        [HttpDelete]
+        [Route("/organisations/{orgId}/doors/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id, [FromRoute] int orgId)
+        {
+            if (!await _orgRepo.OrgExistAsync(orgId))
+            {
+                return BadRequest("organisation id does not exist");
+
+            }
+            var doorModel = await _doorRepo.DeleteAsync(id);
+            if (doorModel == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+
+        }
 
     }
 }

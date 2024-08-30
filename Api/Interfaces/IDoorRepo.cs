@@ -14,5 +14,6 @@ namespace Api.Interfaces
         public Task<Door?> GetDoorByIdAsync (int id);
         public Task<Door> CreateAsync(int orgId , CreateDoorDto doorDto);
         public Task<Door?> UpdateAsync(int id , UpdateDoorDto doorDto);
+        public Task<Door?> DeleteAsync(int id);
     }
 }
