@@ -17,6 +17,7 @@ namespace Api.Models
         public string Name { get; set; } = "";
         public string EmailDomain { get; set; } = "";
         public List<Door> Doors { get; set; } = new List<Door>();
+        public List<AppUser> AppUsers{ get; set; } = new List<AppUser>();
 
 
     }
