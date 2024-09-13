@@ -4,6 +4,7 @@ using Api.Data;
 using Api.Interfaces;
 using Api.Models;
 using Api.Repos;
+using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -44,12 +45,13 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
 
 builder.Services.AddScoped<IOrgRepo, OrgRepo>();
 builder.Services.AddScoped<IDoorRepo, DoorRepo>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

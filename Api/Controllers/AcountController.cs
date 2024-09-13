@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Api.Dtos.Account;
-using Api.Migrations;
+using Api.Interfaces;
 using Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -17,13 +14,19 @@ namespace Api.Controllers
     public class AcountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        public AcountController(UserManager<AppUser> userManager)
+        private readonly ITokenService _tokenService;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IOrgRepo _orgRepo;
+        public AcountController(UserManager<AppUser> userManager, IOrgRepo orgRepo, ITokenService tokenService, SignInManager<AppUser> signInManager)
 
         {
             _userManager = userManager;
+            _orgRepo = orgRepo;
+            _tokenService = tokenService;
+            _signInManager = signInManager;
 
         }
-        [HttpPost]
+        [HttpPost("/Register")]
         public async Task<IActionResult> SignUp([FromBody] RegisterDto registerDto)
         {
             try
@@ -32,7 +35,11 @@ namespace Api.Controllers
                 {
                     return BadRequest("invalid input");
                 }
-                var appuser = new AppUser
+                if (!await _orgRepo.OrgExistAsync(registerDto.OrganisationId))
+                {
+                    return BadRequest("organisation id does not exist");
+                }
+                var appUser = new AppUser
                 {
                     UserName = registerDto.UserName,
                     Email = registerDto.Email,
@@ -40,14 +47,22 @@ namespace Api.Controllers
                     LastName = registerDto.LastName,
                     OrganisationId = registerDto.OrganisationId,
                 };
-                var CreateUser = await _userManager.CreateAsync(appuser, registerDto.Password);
+                var CreateUser = await _userManager.CreateAsync(appUser, registerDto.Password);
 
                 if (CreateUser.Succeeded)
                 {
-                    var roleresult = await _userManager.AddToRoleAsync(appuser, "User");
+                    var roleresult = await _userManager.AddToRoleAsync(appUser, "User");
                     if (roleresult.Succeeded)
                     {
-                        return Ok("User created");
+                        var userRoles = await _userManager.GetRolesAsync(appUser);
+                        var token = _tokenService.CreateToken(appUser, userRoles);
+
+                        return Ok(new NewUserDto
+                        {
+                            UserName = appUser.UserName,
+                            Email = appUser.Email,
+                            Token = token
+                        });
                     }
                     else
                     {
@@ -66,5 +81,66 @@ namespace Api.Controllers
             }
 
         }
+        [HttpPost("/login")]
+        public async Task<IActionResult> Login([FromBody] SignInDto signInDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid input ");
+            }
+            var User = await _userManager.Users.FirstOrDefaultAsync(c => c.UserName == signInDto.UserName);
+            if (User == null)
+            {
+                return Unauthorized("username and/or password is incorrect");
+            }
+            var result = await _signInManager.CheckPasswordSignInAsync(User, signInDto.Password!, false);
+            if (!result.Succeeded)
+            {
+                return Unauthorized("username and/or password is incorrect");
+
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(User);
+            var token = _tokenService.CreateToken(User, userRoles);
+            return Ok(new NewUserDto
+            {
+                UserName = User.UserName,
+                Email = User.Email,
+                Token = token
+            });
+
+        }
+        [HttpPost("/roles/{username}")]
+        public async Task<IActionResult> AddAdminRole([FromRoute] string username)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(c => c.UserName == username);
+
+            if (user == null)
+            {
+                return BadRequest("username does not exist");
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Admin");
+
+            if (roleResult.Succeeded)
+            {
+                var userRole = await _userManager.GetRolesAsync(user);
+                var token = _tokenService.CreateToken(user, userRole);
+                
+                return Ok(new NewUserDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = token
+                }
+                );
+            }
+            else
+            {
+                return StatusCode(500, "something went wrong pls try again");
+            }
+        }
+
     }
+
 }

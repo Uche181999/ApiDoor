@@ -26,10 +26,12 @@ namespace Api.Data
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole{
-                    Name ="User"
+                    Name ="User",
+                    NormalizedName= "USER"
                     },
                 new IdentityRole{
-                    Name ="Admin"
+                    Name ="Admin",
+                    NormalizedName ="ADMIN"
                     }
 
             };
