@@ -6,6 +6,7 @@ using Api.Dtos.Door;
 using Api.Interfaces;
 using Api.Mappers;
 using Api.Repos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -24,6 +25,7 @@ namespace Api.Controllers
         }
         [HttpGet]
         [Route("/doors")]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             var doorModel = await _doorRepo.GetAllAsync();

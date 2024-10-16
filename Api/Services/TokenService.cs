@@ -23,7 +23,7 @@ namespace Api.Services
 
         }
 
-        public string CreateToken(AppUser appUser, IList<string> roles)
+         public string CreateToken(AppUser appUser, IList<string> roles)
         {
             var claims = new List<Claim>{
             new Claim(JwtRegisteredClaimNames.Email, appUser.Email!),
@@ -39,13 +39,14 @@ namespace Api.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 SigningCredentials = creds,
                 Issuer = _config["Jwt:Issuer"],
                 Audience = _config["Jwt:Audience"]
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
 
             return tokenHandler.WriteToken(token);
         }

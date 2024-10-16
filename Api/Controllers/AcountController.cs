@@ -2,6 +2,7 @@
 using Api.Dtos.Account;
 using Api.Interfaces;
 using Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,17 @@ namespace Api.Controllers
         private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IOrgRepo _orgRepo;
-        public AcountController(UserManager<AppUser> userManager, IOrgRepo orgRepo, ITokenService tokenService, SignInManager<AppUser> signInManager)
+        private readonly IAuthorizationService _authorizationService;
+        public AcountController(UserManager<AppUser> userManager,
+         IOrgRepo orgRepo, ITokenService tokenService,
+          SignInManager<AppUser> signInManager, IAuthorizationService authorizationService)
 
         {
             _userManager = userManager;
             _orgRepo = orgRepo;
             _tokenService = tokenService;
             _signInManager = signInManager;
-
+            _authorizationService = authorizationService;
         }
         [HttpPost("/Register")]
         public async Task<IActionResult> SignUp([FromBody] RegisterDto registerDto)
@@ -110,9 +114,11 @@ namespace Api.Controllers
             });
 
         }
-        [HttpPost("/roles/{username}")]
+        [HttpPost("change_roles/{username}")]
+        //[Authorize(Policy ="SpecialAdmin")]
         public async Task<IActionResult> AddAdminRole([FromRoute] string username)
         {
+            var AuthorizationResult =await _authorizationService.AuthorizeAsync(User, username,"specialAdmin");
             var user = await _userManager.Users.FirstOrDefaultAsync(c => c.UserName == username);
 
             if (user == null)
