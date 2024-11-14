@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241112070546_AdjustOtpTable")]
+    partial class AdjustOtpTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,12 +79,6 @@ namespace Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Creator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -91,6 +88,9 @@ namespace Api.Migrations
 
                     b.Property<int>("OrganizationId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("createdTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -126,13 +126,13 @@ namespace Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c7ae16da-1634-4248-b64e-c9626e168b0f",
+                            Id = "0d7aa440-7424-4a4d-ab58-ed0d19ef49b2",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "8f29a118-066e-4c9d-b965-dba2a4330bad",
+                            Id = "f2f7ae52-4805-4f79-979c-acf3151dc57c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

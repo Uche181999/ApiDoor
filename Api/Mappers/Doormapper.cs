@@ -13,13 +13,13 @@ namespace Api.Mappers
         {
             return new DoorDto(door.Id, door.Name, door.Code, door.OrganisationId, door.Organisation?.ToOrgDto());
         }
-        public static Door ToCreateDto(this CreateDoorDto door, int stockId)
+        public static Door ToCreateDto(this CreateDoorDto door, int OrganisationId)
         {
             return new Door
             {
                 Name = door.Name,
                 Code = door.Code,
-                OrganisationId = stockId
+                OrganisationId = OrganisationId
             };
         }
 

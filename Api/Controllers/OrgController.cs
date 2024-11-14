@@ -9,12 +9,14 @@ using Api.Data;
 using Api.Mappers;
 using Api.Interfaces;
 using Api.Dtos.Org;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Api.Controllers
 {
     [Route("organisations")]
     [ApiController]
+    [Authorize(Policy ="GlobalAdmin")]
     public class OrgController : ControllerBase
     {
         private readonly IOrgRepo _OrgRepo;

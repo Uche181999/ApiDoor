@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Api.Models;
@@ -10,25 +11,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Services.Authorization
 {
-    public class SpecialAdminHandler : AuthorizationHandler<SpecialAdminRequirement>
+    public class SpecialAdminHandler : AuthorizationHandler<SpecialAdminRequirement, AppUser>
     {
-        private readonly UserManager<AppUser> _userManager;
-        public SpecialAdminHandler(UserManager<AppUser> userManager)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, SpecialAdminRequirement requirement, AppUser resource)
         {
-            _userManager = userManager;
+  var user = context.User;
+            var userOrg = user.FindFirst("OrganisationId")?.Value!;
+            var orgId = resource.OrganisationId;
+            var isAdmin = user.IsInRole("Admin");
 
-        }
+            if (orgId != null && userOrg != null)
+            {
+                var stringOrgId = orgId.ToString();
+                if (isAdmin && stringOrgId == userOrg)
+                {
+                    context.Succeed(requirement);
+                }
 
-        protected async  override Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, SpecialAdminRequirement requirement)
-        {
-            var User = context.User;
-            var userOrg = int.Parse(User.FindFirst("OrganisationId")?.Value!);
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            var targetUserName = context.Resource as string;
-            var targetUser =await  _userManager.Users.FirstOrDefaultAsync(c => c.UserName == targetUserName);
-            var targetOrg = targetUser?.OrganisationId ;
+            }
 
-            if (userRole == "admin" && (userOrg == 1 || userOrg == targetOrg))
+            if (isAdmin && userOrg == "1")
             {
                 context.Succeed(requirement);
             }
@@ -36,3 +38,6 @@ namespace Api.Services.Authorization
         }
     }
 }
+
+
+

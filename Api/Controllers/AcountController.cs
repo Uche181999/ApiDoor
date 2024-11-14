@@ -65,7 +65,8 @@ namespace Api.Controllers
                         {
                             UserName = appUser.UserName,
                             Email = appUser.Email,
-                            Token = token
+                            Token = token,
+                            Roles = userRoles
                         });
                     }
                     else
@@ -110,41 +111,53 @@ namespace Api.Controllers
             {
                 UserName = User.UserName,
                 Email = User.Email,
-                Token = token
+                Token = token,
+                Roles = userRoles
             });
 
         }
-        [HttpPost("change_roles/{username}")]
-        //[Authorize(Policy ="SpecialAdmin")]
+        [HttpPut("add_roles/{username}")]
         public async Task<IActionResult> AddAdminRole([FromRoute] string username)
         {
-            var AuthorizationResult =await _authorizationService.AuthorizeAsync(User, username,"specialAdmin");
+
             var user = await _userManager.Users.FirstOrDefaultAsync(c => c.UserName == username);
+
 
             if (user == null)
             {
                 return BadRequest("username does not exist");
             }
 
+            var AuthorizationResult = await _authorizationService.AuthorizeAsync(User, user, "SpecialAdmin");
+            if (!AuthorizationResult.Succeeded)
+            {
+                return StatusCode(500, "authorization service error\n");
+            }
+            var userRole = await _userManager.GetRolesAsync(user);
+            if (userRole.Contains("Admin"))
+            {
+                return Ok("user is already an Admin");
+            }
+
             var roleResult = await _userManager.AddToRoleAsync(user, "Admin");
 
-            if (roleResult.Succeeded)
-            {
-                var userRole = await _userManager.GetRolesAsync(user);
-                var token = _tokenService.CreateToken(user, userRole);
-                
-                return Ok(new NewUserDto
-                {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    Token = token
-                }
-                );
-            }
-            else
+            if (!roleResult.Succeeded)
             {
                 return StatusCode(500, "something went wrong pls try again");
             }
+
+            userRole = await _userManager.GetRolesAsync(user);
+            var token = _tokenService.CreateToken(user, userRole);
+
+            return Ok(new NewUserDto
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = token,
+                Roles = userRole
+            }
+            );
+
         }
 
     }

@@ -28,9 +28,9 @@ namespace Api.Services
             var claims = new List<Claim>{
             new Claim(JwtRegisteredClaimNames.Email, appUser.Email!),
             new Claim(JwtRegisteredClaimNames.GivenName,appUser.UserName!),
-            new Claim("OrganisationId",appUser.OrganisationId.ToString()!)
+            new Claim("OrganisationId",appUser.OrganisationId.ToString()!),
          };
-            foreach (var role in roles)
+          foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }

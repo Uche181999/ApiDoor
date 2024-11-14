@@ -6,7 +6,9 @@ using Api.Models;
 using Api.Repos;
 using Api.Services;
 using Api.Services.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -31,7 +33,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' followed by your token in the text input below. Example: \"Bearer {your_token}\"",
+        Description = "Enter ' your token in the text input below. Example: \" {your_token}\"",
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -57,15 +59,23 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddApiEndpoints();
 
-/*builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("specialAdmin", policy =>
+            options.AddPolicy("SpecialAdmin", policy =>
             {
                 policy.Requirements.Add(new SpecialAdminRequirement());
             }
+            
+        );
+        options.AddPolicy("GlobalAdmin", policy =>
+            {
+                policy.RequireClaim("OrganisationId", "1");
+                policy.RequireRole("Admin");
+            }
+            
         );
     }
-    );*/
+    );
 
 builder.Services.AddAuthentication(options =>
     {
@@ -84,11 +94,29 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
+        options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine("Token invalid: " + context.Exception.Message);
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("Token valid");
+            return Task.CompletedTask;
+        }
+    };
+        
     });
 
+
+builder.Services.AddScoped<IOtpRepo, OtpRepo>();
 builder.Services.AddScoped<IOrgRepo, OrgRepo>();
 builder.Services.AddScoped<IDoorRepo, DoorRepo>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddScoped<IAuthorizationHandler, SpecialAdminHandler>();
 
 var app = builder.Build();
 

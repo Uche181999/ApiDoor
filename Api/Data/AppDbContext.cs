@@ -18,6 +18,7 @@ namespace Api.Data
         }
         public DbSet<Door> Doors { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
+        public DbSet<Otp> Otps { get; set; }
 
         protected override  void OnModelCreating(ModelBuilder builder)
         {
