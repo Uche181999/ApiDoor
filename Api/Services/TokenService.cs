@@ -26,8 +26,10 @@ namespace Api.Services
          public string CreateToken(AppUser appUser, IList<string> roles)
         {
             var claims = new List<Claim>{
-            new Claim(JwtRegisteredClaimNames.Email, appUser.Email!),
-            new Claim(JwtRegisteredClaimNames.GivenName,appUser.UserName!),
+           // new Claim(JwtRegisteredClaimNames.Email, appUser.Email!),
+           // new Claim(JwtRegisteredClaimNames.GivenName, appUser.UserName!),    
+            new Claim("Emails", appUser.Email!),
+            new Claim("Given_Names",appUser.UserName!),
             new Claim("OrganisationId",appUser.OrganisationId.ToString()!),
          };
           foreach (var role in roles)

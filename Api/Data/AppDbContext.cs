@@ -20,7 +20,7 @@ namespace Api.Data
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<Otp> Otps { get; set; }
 
-        protected override  void OnModelCreating(ModelBuilder builder)
+      protected override  void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 

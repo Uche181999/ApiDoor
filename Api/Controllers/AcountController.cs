@@ -30,7 +30,7 @@ namespace Api.Controllers
             _signInManager = signInManager;
             _authorizationService = authorizationService;
         }
-        [HttpPost("/Register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> SignUp([FromBody] RegisterDto registerDto)
         {
             try
@@ -86,7 +86,7 @@ namespace Api.Controllers
             }
 
         }
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SignInDto signInDto)
         {
             if (!ModelState.IsValid)
@@ -104,7 +104,8 @@ namespace Api.Controllers
                 return Unauthorized("username and/or password is incorrect");
 
             }
-
+            Console.WriteLine($"username: {User.UserName}");
+            Console.WriteLine($"email: {User.Email}");
             var userRoles = await _userManager.GetRolesAsync(User);
             var token = _tokenService.CreateToken(User, userRoles);
             return Ok(new NewUserDto

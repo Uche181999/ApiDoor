@@ -6,6 +6,8 @@ using Api.Models;
 using Api.Repos;
 using Api.Services;
 using Api.Services.Authorization;
+using Api.Services.Authorization.Handler;
+using Api.Services.Authorization.Requirement;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -74,6 +76,18 @@ builder.Services.AddAuthorization(options =>
             }
             
         );
+          options.AddPolicy("GroupAdmin", policy =>
+            {
+                policy.Requirements.Add(new GroupAdminRequirement());
+            }
+            
+        );
+        options.AddPolicy("OtpAccess", policy =>
+            {
+                policy.Requirements.Add(new OtpAccessRequirement());
+            }
+            
+        );
     }
     );
 
@@ -84,16 +98,26 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-        };
+           options.TokenValidationParameters = new TokenValidationParameters
+    {
+        // Maps "given_name" from the token to User.Identity.Name
+        //NameClaimType = "given_name",
+        
+        // Validates that the token issuer matches the expected issuer
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+        // Validates that the token audience matches the expected audience
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+
+        // Ensures the token is not expired
+        ValidateLifetime = true,
+
+        // Ensures the token is signed with the expected key
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
         options.Events = new JwtBearerEvents
     {
         OnAuthenticationFailed = context =>
@@ -117,6 +141,8 @@ builder.Services.AddScoped<IDoorRepo, DoorRepo>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IAuthorizationHandler, SpecialAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, GroupAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, OtpAccessHandler>();
 
 var app = builder.Build();
 

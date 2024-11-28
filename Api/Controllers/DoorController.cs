@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Dtos.Door;
+using Api.Dtos.Otp;
 using Api.Interfaces;
 using Api.Mappers;
 using Api.Repos;
@@ -17,14 +18,17 @@ namespace Api.Controllers
     {
         private readonly IDoorRepo _doorRepo;
         private readonly IOrgRepo _orgRepo;
-        public DoorController(IDoorRepo doorRepo, IOrgRepo orgRepo)
+        private readonly IOtpRepo _otpRepo;
+        private readonly IAuthorizationService _authorizationService;
+        public DoorController(IDoorRepo doorRepo, IOrgRepo orgRepo,IOtpRepo otpRepo, IAuthorizationService authorizationService)
         {
             _doorRepo = doorRepo;
             _orgRepo = orgRepo;
-
+            _otpRepo = otpRepo;
+            _authorizationService = authorizationService;
         }
         [HttpGet]
-        [Route("/doors")]
+        [Route("/organisations/doors")]
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -45,7 +49,7 @@ namespace Api.Controllers
             var doorsDto = doorModels.Select(x => x.ToDoorDto());
             return Ok(doorsDto);
         }
-        [HttpGet]
+       /* [HttpGet]
         [Route("/organisations/{orgId}/doors/{id}")]
         public async Task<IActionResult> GetDoorById([FromRoute] int orgId, [FromRoute] int id)
         {
@@ -60,7 +64,7 @@ namespace Api.Controllers
             }
             return Ok(doorModel.ToDoorDto());
 
-        }
+        }*/
 
         [HttpPost]
         [Route("/organisations/{orgId}/doors")]
@@ -102,6 +106,7 @@ namespace Api.Controllers
             }
             return Ok(updatedDoor.ToDoorDto());
         }
+
         [HttpDelete]
         [Route("/organisations/{orgId}/doors/{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id, [FromRoute] int orgId)
@@ -119,6 +124,47 @@ namespace Api.Controllers
             return NoContent();
 
         }
+        [HttpGet]
+        [Route("organisations/{orgId}/doors/{id}")]
+        public async Task<IActionResult> GetDoorById([FromRoute] int orgId, [FromRoute] int id, [FromQuery] int? otp)
+        {
+
+            if (!await _orgRepo.OrgExistAsync(orgId))
+            {
+                return BadRequest("organisation id does not exist");
+            }
+            var doorModel = await _doorRepo.GetDoorByIdAsync(id);
+            if (doorModel == null)
+            {
+                return NotFound();
+            }
+            if (otp == null)
+            {
+                var AuthorizationResult = await _authorizationService.AuthorizeAsync(User, doorModel, "GroupAdmin");
+                if (!AuthorizationResult.Succeeded)
+                {
+                    return StatusCode(500, "authorization service error\n");
+                }
+            }
+            else
+            {
+                var validOtp = _otpRepo.OtpIsValid(otp);
+                if  (validOtp == null ){
+                    return  BadRequest(" Invalid token.  Please request token from an Admin");
+                }
+
+                var AuthorizationResult = await _authorizationService.AuthorizeAsync(User, validOtp, "OtpAccess");
+                if (!AuthorizationResult.Succeeded)
+                {
+                    return StatusCode(500, "authorization service error\n");
+                }
+                
+            }
+            return Ok(doorModel.ToDoorDto());
+
+        }
+
+
 
     }
 }

@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241117072320_removeoverideusernameandemail")]
+    partial class removeoverideusernameandemail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,13 +129,13 @@ namespace Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ff07c1ee-1f0c-4be9-901e-e5a884c5b9a5",
+                            Id = "0407ee25-b2c3-43f9-bf92-cdccd490ff13",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "6aab00c9-7281-47b4-b980-ffad6e521edf",
+                            Id = "951197d8-86e4-4a9a-96d2-252d266c91ad",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

@@ -11,7 +11,7 @@ namespace Api.Models
         public int Code { get; set; }
         public string Creator { get; set; } = "";
         public int OrganizationId { get; set; } 
-        public Boolean IsUsed { get; set; } = false;
+        public bool IsUsed { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

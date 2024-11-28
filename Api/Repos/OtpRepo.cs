@@ -7,6 +7,7 @@ using Api.Dtos.Otp;
 using Api.Interfaces;
 using Api.Mappers;
 using Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Repos
 {
@@ -23,6 +24,32 @@ namespace Api.Repos
             await _context.Otps.AddAsync(createModel);
             await _context.SaveChangesAsync();
             return createModel;
+        }
+
+        public async Task<string> DeleteOtp()
+        {
+            var allRecords = await _context.Otps.ToListAsync();
+            _context.Otps.RemoveRange(allRecords);
+
+            await _context.SaveChangesAsync();
+            return "successful";
+        }
+
+        public async Task<Otp?> OtpIsValid(int? otp)
+        {
+            var existOtp = await  _context.Otps.FirstOrDefaultAsync(o => o.Code == otp);
+            if (existOtp == null){
+                return null;
+            }
+            TimeSpan difference = existOtp.CreatedAt - DateTime.Now ;
+
+            if(existOtp.IsUsed == false && difference.TotalMinutes > 30 ){
+                existOtp.IsUsed = true; 
+                return existOtp; 
+            }
+            else {
+                return null;
+            }
         }
     }
 }
