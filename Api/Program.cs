@@ -19,6 +19,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -134,7 +136,7 @@ builder.Services.AddAuthentication(options =>
         
     });
 
-
+builder.Services.AddScoped<IVisitRepo, VisitRepo>();
 builder.Services.AddScoped<IOtpRepo, OtpRepo>();
 builder.Services.AddScoped<IOrgRepo, OrgRepo>();
 builder.Services.AddScoped<IDoorRepo, DoorRepo>();
@@ -145,6 +147,20 @@ builder.Services.AddScoped<IAuthorizationHandler, GroupAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OtpAccessHandler>();
 
 var app = builder.Build();
+/*// Seed database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await DatabaseSeeder.SeedUsersAndRolesAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}*/ //to be checked later
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

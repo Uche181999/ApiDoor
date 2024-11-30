@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241129192034_UpdatedSeederTOacceptPassword2")]
+    partial class UpdatedSeederTOacceptPassword2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,7 +122,7 @@ namespace Api.Migrations
                     b.Property<DateTime>("EntryTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ExitTime")
+                    b.Property<DateTime>("ExitTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrganisationId")
@@ -165,13 +168,13 @@ namespace Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "first-role-id",
+                            Id = "264bbca9-ff51-458b-8dbb-32d1e769f0cf",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "sec-role-id",
+                            Id = "331fee1f-ccd3-4d77-a0cc-34ec3fe43c70",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -336,18 +339,6 @@ namespace Api.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "first-user-id",
-                            RoleId = "first-role-id"
-                        },
-                        new
-                        {
-                            UserId = "first-user-id",
-                            RoleId = "sec-role-id"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -385,27 +376,6 @@ namespace Api.Migrations
                     b.HasIndex("OrganisationId");
 
                     b.HasDiscriminator().HasValue("AppUser");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "first-user-id",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "fe2bc926-b1e9-44cb-9987-9e95cd617c30",
-                            Email = "uche181999@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "UCHE181999@GMAIL.COM",
-                            NormalizedUserName = "UCHE18999",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGs4moV43L1N0x5p7AjKXlnK/3sQjwGRmWZKlHYYggDnnlPpaELq4wBO1aSvA9LKpA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "16d1644e-5d7a-4579-882a-cb14d27c5d9c",
-                            TwoFactorEnabled = false,
-                            UserName = "uche181999",
-                            FirstName = "Uche",
-                            LastName = "Emmanuel",
-                            OrganisationId = 1
-                        });
                 });
 
             modelBuilder.Entity("Api.Models.Door", b =>

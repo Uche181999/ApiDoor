@@ -7,6 +7,10 @@ namespace Api.Models
 {
     public class Organisation
     {
+        public Organisation()
+        {
+        }
+
         public Organisation(string name, string emailDomain)
         {
             Name = name;

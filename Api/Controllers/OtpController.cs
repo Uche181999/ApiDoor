@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Api.Controllers
 {
-    [Route("/otp")]
+    [Route("Api/otp")]
     [ApiController]
     public class OtpController : ControllerBase
     {
@@ -63,7 +63,7 @@ namespace Api.Controllers
             {
                 return NotFound();
             }
-            return Ok($"{otp}.  Deleted all record ");
+            return Ok($"Successfully Deleted all record ");
         }
         
     }

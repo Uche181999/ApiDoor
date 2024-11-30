@@ -16,7 +16,7 @@ namespace Api.Controllers
 {
     [Route("organisations")]
     [ApiController]
-    [Authorize(Policy ="GlobalAdmin")]
+    [Authorize(Policy = "GlobalAdmin")]
     public class OrgController : ControllerBase
     {
         private readonly IOrgRepo _OrgRepo;
@@ -80,7 +80,7 @@ namespace Api.Controllers
             {
                 return NotFound();
             }
-            return NoContent();
+            return Ok($"successfuly deleted the the record of id {id}"); ;
 
         }
     }

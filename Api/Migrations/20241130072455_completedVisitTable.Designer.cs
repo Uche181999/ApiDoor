@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241130072455_completedVisitTable")]
+    partial class completedVisitTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -391,15 +394,15 @@ namespace Api.Migrations
                         {
                             Id = "first-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fe2bc926-b1e9-44cb-9987-9e95cd617c30",
+                            ConcurrencyStamp = "b84f627d-77bc-40b2-ba83-339fa1220a19",
                             Email = "uche181999@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "UCHE181999@GMAIL.COM",
                             NormalizedUserName = "UCHE18999",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGs4moV43L1N0x5p7AjKXlnK/3sQjwGRmWZKlHYYggDnnlPpaELq4wBO1aSvA9LKpA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAANPMMKRh7ngBLu0IERhEHKNox4LHf3lI0UE41k24x1/Hzq5A5YmwLUuv6c5pc/Iw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "16d1644e-5d7a-4579-882a-cb14d27c5d9c",
+                            SecurityStamp = "9413d501-ea22-411f-8a3e-3c52be055da5",
                             TwoFactorEnabled = false,
                             UserName = "uche181999",
                             FirstName = "Uche",

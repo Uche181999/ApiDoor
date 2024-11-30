@@ -6,6 +6,7 @@ using Api.Dtos.Door;
 using Api.Dtos.Otp;
 using Api.Interfaces;
 using Api.Mappers;
+using Api.Models;
 using Api.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,15 @@ namespace Api.Controllers
         private readonly IOrgRepo _orgRepo;
         private readonly IOtpRepo _otpRepo;
         private readonly IAuthorizationService _authorizationService;
-        public DoorController(IDoorRepo doorRepo, IOrgRepo orgRepo,IOtpRepo otpRepo, IAuthorizationService authorizationService)
+        private readonly IVisitRepo _visitRepo;
+        public DoorController(IDoorRepo doorRepo, IOrgRepo orgRepo, IOtpRepo otpRepo, IAuthorizationService authorizationService, IVisitRepo visitRepo)
         {
             _doorRepo = doorRepo;
             _orgRepo = orgRepo;
             _otpRepo = otpRepo;
             _authorizationService = authorizationService;
+            _visitRepo = visitRepo;
+
         }
         [HttpGet]
         [Route("/organisations/doors")]
@@ -49,22 +53,22 @@ namespace Api.Controllers
             var doorsDto = doorModels.Select(x => x.ToDoorDto());
             return Ok(doorsDto);
         }
-       /* [HttpGet]
-        [Route("/organisations/{orgId}/doors/{id}")]
-        public async Task<IActionResult> GetDoorById([FromRoute] int orgId, [FromRoute] int id)
-        {
-            if (!await _orgRepo.OrgExistAsync(orgId))
-            {
-                return BadRequest("organisation id does not exist");
-            }
-            var doorModel = await _doorRepo.GetDoorByIdAsync(id);
-            if (doorModel == null)
-            {
-                return NotFound();
-            }
-            return Ok(doorModel.ToDoorDto());
+        /* [HttpGet]
+         [Route("/organisations/{orgId}/doors/{id}")]
+         public async Task<IActionResult> GetDoorById([FromRoute] int orgId, [FromRoute] int id)
+         {
+             if (!await _orgRepo.OrgExistAsync(orgId))
+             {
+                 return BadRequest("organisation id does not exist");
+             }
+             var doorModel = await _doorRepo.GetDoorByIdAsync(id);
+             if (doorModel == null)
+             {
+                 return NotFound();
+             }
+             return Ok(doorModel.ToDoorDto());
 
-        }*/
+         }*/
 
         [HttpPost]
         [Route("/organisations/{orgId}/doors")]
@@ -121,7 +125,7 @@ namespace Api.Controllers
             {
                 return NotFound();
             }
-            return NoContent();
+            return Ok($"successfuly deleted the the record of id {id}");
 
         }
         [HttpGet]
@@ -143,28 +147,81 @@ namespace Api.Controllers
                 var AuthorizationResult = await _authorizationService.AuthorizeAsync(User, doorModel, "GroupAdmin");
                 if (!AuthorizationResult.Succeeded)
                 {
-                    return StatusCode(500, "authorization service error\n");
+                    return Forbid("Authorization failed.");
+
                 }
+                var userOrg = int.Parse(User.FindFirst("OrganisationId")?.Value!);
+                var userName = User.FindFirst("Given_Names")?.Value!;
+                var visit = new Visit{
+                    Visitor = userName,
+                    Permission = userName,
+                    OrganisationId =orgId,
+                    DoorId =id,
+                };
+                await _visitRepo.CreateAsync(visit);
+
             }
             else
             {
-                var validOtp = _otpRepo.OtpIsValid(otp);
-                if  (validOtp == null ){
-                    return  BadRequest(" Invalid token.  Please request token from an Admin");
+                var validOtp = await _otpRepo.OtpIsValid(otp);
+                if (validOtp == null)
+                {
+                    return BadRequest(" Invalid token.  Please request token from an Admin");
                 }
 
                 var AuthorizationResult = await _authorizationService.AuthorizeAsync(User, validOtp, "OtpAccess");
                 if (!AuthorizationResult.Succeeded)
                 {
-                    return StatusCode(500, "authorization service error\n");
+                    return Forbid("Authorization failed.");
                 }
-                
+                var userOrg = int.Parse(User.FindFirst("OrganisationId")?.Value!);
+                var userName = User.FindFirst("Given_Names")?.Value!;
+                var visit = new Visit{
+                    Visitor = userName,
+                    Permission = validOtp.Creator,
+                    OrganisationId = validOtp.OrganizationId,
+                    DoorId =id,
+                };;
+                await _visitRepo.CreateAsync(visit);
+                Console.WriteLine(validOtp);
+
             }
             return Ok(doorModel.ToDoorDto());
 
         }
+        [HttpPost]
+        [Route("exit/organisations/{orgId}/doors/{id}")]
+        public async Task<IActionResult> Revoke([FromRoute] int orgId, [FromRoute] int id)
+        {
 
+            if (!await _orgRepo.OrgExistAsync(orgId))
+            {
+                return BadRequest("organisation id does not exist");
+            }
+            var doorModel = await _doorRepo.GetDoorByIdAsync(id);
+            if (doorModel == null)
+            {
+                return NotFound();
+            }
+
+
+
+            var userName = User.FindFirst("Given_Names")?.Value!;
+            var visit =await  _visitRepo.AddExitasync(userName, orgId, id);
+            if (visit == null)
+            {
+              return BadRequest(" you have not visited before");  
+            }
+
+            return Ok($"{visit.Visitor} was successfully logged out of door {visit.DoorId} in organisation of id {visit.OrganisationId}");
+
+        }
 
 
     }
+
+
+
+
+
 }

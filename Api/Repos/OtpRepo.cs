@@ -41,9 +41,9 @@ namespace Api.Repos
             if (existOtp == null){
                 return null;
             }
-            TimeSpan difference = existOtp.CreatedAt - DateTime.Now ;
+            TimeSpan difference =  DateTime.Now - existOtp.CreatedAt  ;
 
-            if(existOtp.IsUsed == false && difference.TotalMinutes > 30 ){
+            if (!existOtp.IsUsed && difference.TotalMinutes <= 30){
                 existOtp.IsUsed = true; 
                 return existOtp; 
             }

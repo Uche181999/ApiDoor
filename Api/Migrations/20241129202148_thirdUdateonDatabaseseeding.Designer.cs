@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241129202148_thirdUdateonDatabaseseeding")]
+    partial class thirdUdateonDatabaseseeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,7 +122,7 @@ namespace Api.Migrations
                     b.Property<DateTime>("EntryTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ExitTime")
+                    b.Property<DateTime>("ExitTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrganisationId")
@@ -391,19 +394,17 @@ namespace Api.Migrations
                         {
                             Id = "first-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fe2bc926-b1e9-44cb-9987-9e95cd617c30",
-                            Email = "uche181999@gmail.com",
+                            ConcurrencyStamp = "5469a3ad-fce1-4b64-9358-5f6233a5a6ac",
+                            Email = "UCHE181999@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "UCHE181999@GMAIL.COM",
                             NormalizedUserName = "UCHE18999",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGs4moV43L1N0x5p7AjKXlnK/3sQjwGRmWZKlHYYggDnnlPpaELq4wBO1aSvA9LKpA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECiH9t1b77/LQwQ1nx2Ku+rjJ/S/9wusvVMb+5jS0zW04nogIAEAFja+Qy20R5+wlg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "16d1644e-5d7a-4579-882a-cb14d27c5d9c",
+                            SecurityStamp = "e777acb1-1e52-4339-b9e8-69e05dd1d7e3",
                             TwoFactorEnabled = false,
                             UserName = "uche181999",
-                            FirstName = "Uche",
-                            LastName = "Emmanuel",
                             OrganisationId = 1
                         });
                 });
