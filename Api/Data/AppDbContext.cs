@@ -53,17 +53,17 @@ namespace Api.Data
             var user = new AppUser
             {
                 Id = "first-user-id", // Unique ID
-                UserName = "uche181999",
-                NormalizedUserName = "UCHE18999",
-                Email = "uche181999@gmail.com",
-                NormalizedEmail = "UCHE181999@GMAIL.COM",
+                UserName = "admin1",
+                NormalizedUserName = "admin1",
+                Email = "admin@example.com",
+                NormalizedEmail = "admin@example.COM",
                 EmailConfirmed = true,
-                FirstName ="Uche",
-                LastName ="Emmanuel",
+                FirstName ="first",
+                LastName ="admin",
                 OrganisationId = 1,
 
             };
-            user.PasswordHash = hasher.HashPassword(user, "Toegbwu@1812");
+            user.PasswordHash = hasher.HashPassword(user, "Admin@123");
             builder.Entity<AppUser>().HasData(user);
             var  userRole =new [] {
                 new IdentityUserRole<string>
